@@ -18,7 +18,9 @@ data = {
     "UnitPrice": np.round(np.random.uniform(5, 150, n), 2),
     "OrderDate": [datetime(2024,1,1) + timedelta(days=int(x)) for x in np.random.uniform(0, 300, n)],
     "DeliveryDate": [datetime(2024,1,1) + timedelta(days=int(x)) for x in np.random.uniform(5, 350, n)],
-    "Category": np.random.choice(categories, n)
+    "Category": np.random.choice(categories, n),
+    "QualityIssues": np.random.choice(["No", "Yes"], n, p=[0.9, 0.1]),
+    "Discount": np.round(np.random.uniform(0, 0.2, n), 2)   
 }
 
 df = pd.DataFrame(data)

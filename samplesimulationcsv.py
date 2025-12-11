@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 os.makedirs("data", exist_ok=True)
 
 np.random.seed(42)
-n = 200
+n = 2000
 suppliers = ['PekanMutteri', 'JarkonPaja', 'O-Rauta', 'MarkunTukki']
 categories = ['Electrical', 'Mechanical', 'Hydraulics', 'Consumables']
 

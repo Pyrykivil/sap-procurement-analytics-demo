@@ -46,51 +46,70 @@ orders_supplier_month = df.groupby(['Supplier', 'OrderMonth']).size().unstack(fi
 print("\nOrders by Supplier and Month:")
 print(orders_supplier_month)
 
-# Visualizations
-plt.figure(figsize=(12, 10))
+# Monthly total spend per supplier
+spend_supplier_month = df.groupby(['Supplier', 'OrderMonth'])['TotalSpend'].sum().unstack(fill_value=0)
+print("\nMonthly Total Spend per Supplier:")
+print(spend_supplier_month)
 
-# Total Spend per Supplier
+# Monthly average quantity per supplier
+quantity_supplier_month = df.groupby(['Supplier', 'OrderMonth'])['Quantity'].mean().unstack(fill_value=0)
+print("\nMonthly Average Quantity per Supplier:")
+print(quantity_supplier_month)
+
+# Monthly quality issues per supplier
+issues_supplier_month = df[df['QualityIssues'] == 'Yes'].groupby(['Supplier', 'OrderMonth']).size().unstack(fill_value=0)
+print("\nMonthly Quality Issues per Supplier:")
+print(issues_supplier_month)
+
+# Monthly average discount per supplier
+discount_supplier_month = df.groupby(['Supplier', 'OrderMonth'])['Discount'].mean().unstack(fill_value=0)
+print("\nMonthly Average Discount per Supplier:")
+print(discount_supplier_month)
+
+# Visualizations
+plt.figure(figsize=(15, 12))
+
+# Monthly Total Spend per Supplier
 plt.subplot(3, 2, 1)
 total_spend_supplier.plot(kind='pie', autopct='%1.1f%%', startangle=90)
 plt.title('Total Spend per Supplier')
-plt.ylabel('')  # Remove ylabel for pie chart
+plt.ylabel('')
 
-# Average Quantity per Category
+# Monthly Average Quantity per Supplier
 plt.subplot(3, 2, 2)
-avg_quantity_category.plot(kind='bar', color='lightgreen')
-plt.title('Average Quantity per Category')
+for supplier in quantity_supplier_month.index:
+    quantity_supplier_month.loc[supplier].plot(kind='line', marker='o', label=supplier)
+plt.title('Monthly Average Quantity per Supplier')
 plt.ylabel('Average Quantity')
 plt.xticks(rotation=45)
+plt.legend()
 
-# Orders by Month
+# Monthly Orders per Supplier
 plt.subplot(3, 2, 3)
-orders_by_month.plot(kind='line', marker='o', color='orange')
-plt.title('Total Orders by Month')
-plt.ylabel('Number of Orders')
-plt.xticks(rotation=45)
-
-# Orders by Supplier per Month
-plt.subplot(3, 2, 4)
 for supplier in orders_supplier_month.index:
     orders_supplier_month.loc[supplier].plot(kind='line', marker='o', label=supplier)
-plt.title('Orders by Supplier per Month')
+plt.title('Monthly Orders per Supplier')
 plt.ylabel('Number of Orders')
 plt.xticks(rotation=45)
 plt.legend()
 
-# Quality Issues per Supplier
-plt.subplot(3, 2, 5)
-quality_issues_supplier.plot(kind='bar', color='red')
-plt.title('Quality Issues per Supplier')
+# Monthly Quality Issues per Supplier
+plt.subplot(3, 2, 4)
+for supplier in issues_supplier_month.index:
+    issues_supplier_month.loc[supplier].plot(kind='line', marker='o', label=supplier)
+plt.title('Monthly Quality Issues per Supplier')
 plt.ylabel('Number of Issues')
 plt.xticks(rotation=45)
+plt.legend()
 
-# Average Discount per Supplier
-plt.subplot(3, 2, 6)
-avg_discount_supplier.plot(kind='bar', color='purple')
-plt.title('Average Discount per Supplier')
+# Monthly Average Discount per Supplier
+plt.subplot(3, 2, 5)
+for supplier in discount_supplier_month.index:
+    discount_supplier_month.loc[supplier].plot(kind='line', marker='o', label=supplier)
+plt.title('Monthly Average Discount per Supplier')
 plt.ylabel('Average Discount (%)')
 plt.xticks(rotation=45)
+plt.legend()
 
 plt.tight_layout()
 plt.savefig('procurement_analysis.png')

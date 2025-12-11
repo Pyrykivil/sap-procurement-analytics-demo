@@ -4,69 +4,55 @@ import matplotlib.pyplot as plt
 
 df = pd.read_csv('data/sap_procurement_data.csv')
 
-# Converting date columns to datetime
 df['OrderDate'] = pd.to_datetime(df['OrderDate'])
 df['DeliveryDate'] = pd.to_datetime(df['DeliveryDate'])
 
-# Total spend (adjusted for discount)
 df['TotalSpend'] = df['UnitPrice'] * df['Quantity'] * (1 - df['Discount'])
 
-# Basic statistics
 print("Basic Statistics:")
 print(df.describe())
 
-# Total spend per supplier
 total_spend_supplier = df.groupby('Supplier')['TotalSpend'].sum()
 print("\nTotal Spend per Supplier:")
 print(total_spend_supplier)
 
-# Average quantity per category
 avg_quantity_category = df.groupby('Category')['Quantity'].mean()
 print("\nAverage Quantity per Category:")
 print(avg_quantity_category)
 
-# Quality issues per supplier
 quality_issues_supplier = df[df['QualityIssues'] == 'Yes'].groupby('Supplier').size()
 print("\nQuality Issues per Supplier:")
 print(quality_issues_supplier)
 
-# Average discount per supplier
 avg_discount_supplier = df.groupby('Supplier')['Discount'].mean()
 print("\nAverage Discount per Supplier:")
 print(avg_discount_supplier)
 
-# Orders by month
 df['OrderMonth'] = df['OrderDate'].dt.to_period('M')
 orders_by_month = df.groupby('OrderMonth').size()
 print("\nOrders by Month:")
 print(orders_by_month)
 
-# Orders by supplier and month
 orders_supplier_month = df.groupby(['Supplier', 'OrderMonth']).size().unstack(fill_value=0)
 print("\nOrders by Supplier and Month:")
 print(orders_supplier_month)
 
-# Monthly total spend per supplier
 spend_supplier_month = df.groupby(['Supplier', 'OrderMonth'])['TotalSpend'].sum().unstack(fill_value=0)
 print("\nMonthly Total Spend per Supplier:")
 print(spend_supplier_month)
 
-# Monthly average quantity per supplier
 quantity_supplier_month = df.groupby(['Supplier', 'OrderMonth'])['Quantity'].mean().unstack(fill_value=0)
 print("\nMonthly Average Quantity per Supplier:")
 print(quantity_supplier_month)
 
-# Monthly quality issues per supplier
 issues_supplier_month = df[df['QualityIssues'] == 'Yes'].groupby(['Supplier', 'OrderMonth']).size().unstack(fill_value=0)
 print("\nMonthly Quality Issues per Supplier:")
 print(issues_supplier_month)
 
-# Monthly average discount per supplier
 discount_supplier_month = df.groupby(['Supplier', 'OrderMonth'])['Discount'].mean().unstack(fill_value=0)
 print("\nMonthly Average Discount per Supplier:")
 print(discount_supplier_month)
 
-# Visualizations
 plt.figure(figsize=(16, 12))
 
 # Total Spend per Supplier
@@ -131,13 +117,11 @@ plt.boxplot([no_issue_price, yes_issue_price], tick_labels=['No Issue', 'Has Iss
 plt.title('Unit Price by Quality Issues')
 plt.ylabel('Unit Price')
 
-# Correlation Analysis
 print("\nCorrelation Matrix:")
 numeric_cols = ['Quantity', 'UnitPrice', 'Discount', 'TotalSpend']
 correlation = df[numeric_cols].corr()
 print(correlation)
 
-# Quality issues impact
 quality_corr = quality_df[['Quantity', 'UnitPrice', 'Discount', 'TotalSpend', 'HasQualityIssue']].corr()
 print("\nCorrelation with Quality Issues:")
 print(quality_corr['HasQualityIssue'])
